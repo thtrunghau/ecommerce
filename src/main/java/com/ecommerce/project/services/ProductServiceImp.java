@@ -31,12 +31,10 @@ public class ProductServiceImp implements ProductService {
     private final CategoryRepository categoryRepository;
     private final ModelMapper modelMapper;
     private final FileService fileService;
-
-    @Value("${project.image}")
-    private String path;
-
     private final CartRepository cartRepository;
     private final CartService cartService;
+    @Value("${project.image}")
+    private String path;
 
     @Autowired
     public ProductServiceImp(ProductRepository productRepository, ModelMapper modelMapper, CategoryRepository categoryRepository, FileService fileService, CartRepository cartRepository, CartService cartService) {
@@ -56,13 +54,13 @@ public class ProductServiceImp implements ProductService {
         List<Product> products = category.getProducts();
 
         for (Product product : products) {
-            if(productDTO.getProductName().equals(product.getProductName())) {
+            if (productDTO.getProductName().equals(product.getProductName())) {
                 isProductNotPresent = false;
                 break;
             }
         }
 
-        if(isProductNotPresent) {
+        if (isProductNotPresent) {
             Product product = modelMapper.map(productDTO, Product.class);
             product.setCategory(category);
             product.setImage("default url");
@@ -70,25 +68,25 @@ public class ProductServiceImp implements ProductService {
             product.setSpecialPrice(specialPrice);
             Product createdProduct = productRepository.save(product);
             return modelMapper.map(createdProduct, ProductDTO.class);
-        }else {
+        } else {
             throw new APIException("Product already exists!!");
         }
     }
 
     @Override
-    public ProductResponse getAllProducts(Integer pageNumber,Integer pageSize, String sortBy,String sortOrder) {
+    public ProductResponse getAllProducts(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
 
         Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc")
                 ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
 
-        Pageable pageDetails = PageRequest.of(pageNumber , pageSize,sortByAndOrder);
+        Pageable pageDetails = PageRequest.of(pageNumber, pageSize, sortByAndOrder);
         Page<Product> pageProducts = productRepository.findAll(pageDetails); // can use metadata of the page
         List<Product> products = pageProducts.getContent();
 
-        if(products.isEmpty()) {
+        if (products.isEmpty()) {
             throw new APIException("No products found!");
-        }else {
+        } else {
             ProductResponse productResponse = new ProductResponse();
             List<ProductDTO> productDTOList = products.stream()
                     .map(product -> modelMapper.map(product, ProductDTO.class))
@@ -114,7 +112,7 @@ public class ProductServiceImp implements ProductService {
                 ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
 
-        Pageable pageDetails = PageRequest.of(pageNumber , pageSize, sortByAndOrder);
+        Pageable pageDetails = PageRequest.of(pageNumber, pageSize, sortByAndOrder);
         Page<Product> pageProducts = productRepository.findByCategory(category, pageDetails); // can use metadata of the page
 
         List<Product> products = pageProducts.getContent();
@@ -146,8 +144,8 @@ public class ProductServiceImp implements ProductService {
                 ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
 
-        Pageable pageDetails = PageRequest.of(pageNumber , pageSize,sortByAndOrder);
-        Page<Product> pageProducts = productRepository.findByProductNameLikeIgnoreCase("%" + keyword + "%",pageDetails); // can use metadata of the page
+        Pageable pageDetails = PageRequest.of(pageNumber, pageSize, sortByAndOrder);
+        Page<Product> pageProducts = productRepository.findByProductNameLikeIgnoreCase("%" + keyword + "%", pageDetails); // can use metadata of the page
         List<Product> products = pageProducts.getContent();
 
         if (!products.isEmpty()) {
@@ -222,7 +220,7 @@ public class ProductServiceImp implements ProductService {
         //Get the product from DB
         Product productFromDB = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
-        
+
         // Upload image to server
         // Get the file name of uploaded image
         String fileName = fileService.uploadImage(path, image);
@@ -236,8 +234,6 @@ public class ProductServiceImp implements ProductService {
         // Return DTO after mapping product to DTO
         return modelMapper.map(updatedProduct, ProductDTO.class);
     }
-
-
 
 
 }

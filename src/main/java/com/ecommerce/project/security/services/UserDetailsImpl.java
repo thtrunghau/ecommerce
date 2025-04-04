@@ -1,11 +1,7 @@
 package com.ecommerce.project.security.services;
 
-import java.io.Serial;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
+import com.ecommerce.project.models.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,8 +9,11 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.ecommerce.project.models.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.io.Serial;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @Data

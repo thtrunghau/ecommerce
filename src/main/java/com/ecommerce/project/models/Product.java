@@ -23,12 +23,12 @@ public class Product {
     private Long productId;
 
     @NotBlank
-    @Size(min=5, message = "Product name must contain at least 5 characters")
+    @Size(min = 5, message = "Product name must contain at least 5 characters")
     private String productName;
     private String image;
 
     @NotBlank
-    @Size(min=5, message = "Product description must contain at least 5 characters")
+    @Size(min = 5, message = "Product description must contain at least 5 characters")
     private String description;
     private Integer quantity;
     private double price;

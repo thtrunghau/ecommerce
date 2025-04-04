@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @Service
-public class CartServiceImpl implements CartService{
+public class CartServiceImpl implements CartService {
     private final ProductRepository productRepository;
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
@@ -46,16 +46,16 @@ public class CartServiceImpl implements CartService{
         // perform validation
         CartItem cartItem = cartItemRepository.findCartItemByProductIdAndCartId(cart.getCartId(), productId);
 
-        if(cartItem != null) {
+        if (cartItem != null) {
             throw new APIException("Product "
                     + product.getProductName()
                     + " already exists");
         }
-        if(product.getQuantity() == 0){
+        if (product.getQuantity() == 0) {
             throw new APIException(product.getProductName()
                     + " is not available");
         }
-        if(product.getQuantity() < quantity){
+        if (product.getQuantity() < quantity) {
             throw new APIException("Please, make an order of the "
                     + product.getProductName()
                     + " less than or equal to the quantity "
@@ -77,7 +77,7 @@ public class CartServiceImpl implements CartService{
         cartItemRepository.save(newCartItem);
         product.setQuantity(product.getQuantity()); // update quantity in order
 
-        cart.setTotalPrice(cart.getTotalPrice() + product.getSpecialPrice()*quantity);
+        cart.setTotalPrice(cart.getTotalPrice() + product.getSpecialPrice() * quantity);
 
         Cart savedCart = cartRepository.save(cart);
 
@@ -123,12 +123,14 @@ public class CartServiceImpl implements CartService{
     @Override
     public CartDTO getCart(String emailId, Long cartId) {
         Cart cart = cartRepository.findCartByEmailAndCartId(emailId, cartId);
-        if(cart == null) {
+        if (cart == null) {
             throw new ResourceNotFoundException("Cart", "cartId", cartId);
         }
 
         CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
-        cart.getCartItems().forEach(cartItem -> {cartItem.getProduct().setQuantity(cartItem.getQuantity());});
+        cart.getCartItems().forEach(cartItem -> {
+            cartItem.getProduct().setQuantity(cartItem.getQuantity());
+        });
         List<ProductDTO> productDTOS = cart.getCartItems().stream()
                 .map(cartItem -> modelMapper.map(cartItem.getProduct(), ProductDTO.class))
                 .toList();
@@ -143,7 +145,7 @@ public class CartServiceImpl implements CartService{
 
         String emailId = authUtil.loggedInEmail();
         Cart userCart = cartRepository.findCartByEmail(emailId);
-        Long cartId  = userCart.getCartId();
+        Long cartId = userCart.getCartId();
 
         Cart cart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cart", "cartId", cartId));
@@ -174,7 +176,7 @@ public class CartServiceImpl implements CartService{
             throw new APIException("The resulting quantity cannot be negative.");
         }
 
-        if (newQuantity == 0){
+        if (newQuantity == 0) {
             deleteProductFromCart(cartId, productId);
         } else {
             cartItem.setProductPrice(product.getSpecialPrice());
@@ -185,7 +187,7 @@ public class CartServiceImpl implements CartService{
         }
 
         CartItem updatedItem = cartItemRepository.save(cartItem);
-        if(updatedItem.getQuantity() == 0){
+        if (updatedItem.getQuantity() == 0) {
             cartItemRepository.deleteById(updatedItem.getCartItemId());
         }
 
@@ -251,9 +253,9 @@ public class CartServiceImpl implements CartService{
         cartItem = cartItemRepository.save(cartItem);
     }
 
-    private Cart createCart(){
+    private Cart createCart() {
         Cart userCart = cartRepository.findCartByEmail(authUtil.loggedInEmail());
-        if(userCart != null){
+        if (userCart != null) {
             return userCart;
         }
 

@@ -1,7 +1,10 @@
 package com.ecommerce.project.security.jwt;
 
 import com.ecommerce.project.security.services.UserDetailsImpl;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.Cookie;
@@ -10,9 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.util.WebUtils;
 
 import javax.crypto.SecretKey;
@@ -52,7 +53,7 @@ public class JwtUtils {
                 .build();
     }
 
-    public ResponseCookie getCleanJwtCookie(){
+    public ResponseCookie getCleanJwtCookie() {
         return ResponseCookie.from(jwtCookieName, null)
                 .path("/api")
                 .build();
