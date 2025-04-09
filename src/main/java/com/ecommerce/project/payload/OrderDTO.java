@@ -1,6 +1,5 @@
 package com.ecommerce.project.payload;
 
-import com.ecommerce.project.models.OrderItem;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +13,7 @@ import java.util.List;
 public class OrderDTO {
     private Long orderId;
     private String email;
-    private List<OrderItem> orderItems;
+    private List<OrderItemDTO> orderItems;
     private LocalDate orderDate;
     private PaymentDTO payment;
     private Double totalAmount;
